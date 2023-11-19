@@ -107,13 +107,8 @@ INCLUDE "vib_mod.f03"
       tmpMatrix2 = 0.0
       !Andrew do scaling
       call hess_mw%print(IOut,header='Hessian matrix massweight')
-      hess_mw = hess_mw*548.5799089940967d0
+      !hess_mw = hess_mw*548.5799089940967d0
       call hess_mw%print(IOut,header='Hessian matrix massweight scaled')
-
-      tmp = hess_mw%at(1,1)
-      write(*,*) tmp
-      l = 3
-      tmp = hess_mw%at(l,l)
 
       do i = 1,n
         do j = 1,n
@@ -138,11 +133,13 @@ INCLUDE "vib_mod.f03"
 !     Call lapack dspev 
 !
 
-      call dspev('V', 'U', n, hess_pack,hess_eigenvalues, &
-        hess_eigenvectors,n,scratch_array,info)
+      call hess_mw%diag(evals=mqc_hess_eigenvalues,evecs=mqc_hess_eigenvectors)
 
-      mqc_hess_eigenvectors = hess_eigenvectors
-      mqc_hess_eigenvalues = hess_eigenvalues
+!      call dspev('V', 'L', n, hess_pack,hess_eigenvalues, &
+!        hess_eigenvectors,n,scratch_array,info)
+
+!     mqc_hess_eigenvectors = hess_eigenvectors
+!     mqc_hess_eigenvalues = hess_eigenvalues
 
       call mqc_hess_eigenvectors%print(IOut,header='Hessian eigenvectors')
       call mqc_hess_eigenvalues%print(IOut,header='Hessian eigenvalues')
