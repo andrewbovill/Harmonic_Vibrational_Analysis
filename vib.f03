@@ -107,7 +107,7 @@ INCLUDE "vib_mod.f03"
       tmpMatrix2 = 0.0
       !Andrew do scaling
       call hess_mw%print(IOut,header='Hessian matrix massweight')
-      !hess_mw = hess_mw*548.5799089940967d0
+      hess_mw = hess_mw*548.5799089940967d0
       call hess_mw%print(IOut,header='Hessian matrix massweight scaled')
 
       do i = 1,n
@@ -133,18 +133,21 @@ INCLUDE "vib_mod.f03"
 !     Call lapack dspev 
 !
 
-      call hess_mw%diag(evals=mqc_hess_eigenvalues,evecs=mqc_hess_eigenvectors)
+!     call hess_mw%diag(evals=mqc_hess_eigenvalues,evecs=mqc_hess_eigenvectors)
 
-!      call dspev('V', 'L', n, hess_pack,hess_eigenvalues, &
-!        hess_eigenvectors,n,scratch_array,info)
+       call dspev('V', 'U', n, hess_pack,hess_eigenvalues, &
+         hess_eigenvectors,n,scratch_array,info)
 
-!     mqc_hess_eigenvectors = hess_eigenvectors
-!     mqc_hess_eigenvalues = hess_eigenvalues
+      mqc_hess_eigenvectors = hess_eigenvectors
+      mqc_hess_eigenvalues = hess_eigenvalues
 
       call mqc_hess_eigenvectors%print(IOut,header='Hessian eigenvectors')
       call mqc_hess_eigenvalues%print(IOut,header='Hessian eigenvalues')
 
-      mqc_hess_eigenvalues = hess_eigenvalues*conv_factor
+      hess_eigenvalues = hess_eigenvalues*conv_factor
+      !Andrew ----This is the line I needed to add
+      hess_eigenvalues = sign(sqrt(abs(hess_eigenvalues)),hess_eigenvalues)
+      mqc_hess_eigenvalues = hess_eigenvalues
 
       call mqc_hess_eigenvalues%print(IOut,header='Hessian eigenvalues after &
         conversion factor')
