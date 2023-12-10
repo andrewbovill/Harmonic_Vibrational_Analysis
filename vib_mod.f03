@@ -21,7 +21,7 @@
 !
       Contains
 
-      integer,parameter::IOut=6
+      integer(kind=int64),parameter::IOut=6
 
       
       end module vib_mod
